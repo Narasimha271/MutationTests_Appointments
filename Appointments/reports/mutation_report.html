@@ -4,9 +4,9 @@
     <body>
         <h1>Mutation Test Report</h1>
         <ul>
-            <li><strong>Total Mutants:</strong> 7</li>
+            <li><strong>Total Mutants:</strong> 13</li>
             <li><strong>Killed:</strong> 0</li>
-            <li><strong>Survived:</strong> 7</li>
+            <li><strong>Survived:</strong> 13</li>
             <li><strong>Incompetent:</strong> 0</li>
             <li><strong>Timeout:</strong> 0</li>
             <li><strong>Mutation Score:</strong> 0.0%</li>
@@ -15,20 +15,201 @@
         <pre>[*] Start mutation process:
    - targets: Services.main
    - tests: Test.appointments_test
-[*] 6 tests passed:
-   - Test.appointments_test [0.10138 s]
+[*] 13 tests passed:
+   - Test.appointments_test [0.24310 s]
 [*] Start mutants generation and execution:
-   - [#   1] COI Services.main: [0.09444 s] survived
-   - [#   2] COI Services.main: [0.09874 s] survived
-   - [#   3] DDL Services.main: [0.10295 s] survived
-   - [#   4] DDL Services.main: [0.09207 s] survived
-   - [#   5] DDL Services.main: [0.10369 s] survived
-   - [#   6] ROR Services.main: [0.10449 s] survived
-   - [#   7] ROR Services.main: [0.08987 s] survived
-[*] Mutation score [1.41215 s]: 0.0%
-   - all: 7
+   - [#   1] COI Services.main: 
+--------------------------------------------------------------------------------
+  38: @app.get('/appointments/{id}')
+  39: def get_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(
+  40:         Models.appointments_models.Appointment.id == id).first()
+  41:     
+- 42:     if id > 6:
++ 42:     if not (id > 6):
+  43:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+  44:     
+  45:     if appointment is None:
+  46:         raise HTTPException(status_code=404, detail='Appointment not found')
+--------------------------------------------------------------------------------
+[0.28482 s] survived
+   - [#   2] COI Services.main: 
+--------------------------------------------------------------------------------
+  41:     
+  42:     if id > 6:
+  43:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+  44:     
+- 45:     if appointment is None:
++ 45:     if not (appointment is None):
+  46:         raise HTTPException(status_code=404, detail='Appointment not found')
+  47:     
+  48:     return appointment
+  49: 
+--------------------------------------------------------------------------------
+[0.27352 s] survived
+   - [#   3] COI Services.main: 
+--------------------------------------------------------------------------------
+  51: 
+  52: 
+  53: @app.delete('/appointments/{id}')
+  54: def delete_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(Models.appointments_models.Appointment.id == id).first()
+- 55:     if id > 6:
++ 55:     if not (id > 6):
+  56:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+  57:     
+  58:     if appointment is None:
+  59:         raise HTTPException(status_code=404, detail='Appointment not found')
+--------------------------------------------------------------------------------
+[0.25634 s] survived
+   - [#   4] COI Services.main: 
+--------------------------------------------------------------------------------
+  54: def delete_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(Models.appointments_models.Appointment.id == id).first()
+  55:     if id > 6:
+  56:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+  57:     
+- 58:     if appointment is None:
++ 58:     if not (appointment is None):
+  59:         raise HTTPException(status_code=404, detail='Appointment not found')
+  60:     db.delete(appointment)
+  61:     db.commit()
+  62:     return {'message': 'Appointment cancelled'}
+--------------------------------------------------------------------------------
+[0.27892 s] survived
+   - [#   5] DDL Services.main: 
+--------------------------------------------------------------------------------
+  25:         db.close()
+  26: 
+  27: 
+  28: 
+- 29: @app.post('/appointments')
+- 30: def create_appointment(appointment: AppointmentCreate, db: Session = Depends(get_db)):db_appointment = Appointment(name=appointment.name, time=appointment.time)
++ 29: def create_appointment(appointment: AppointmentCreate, db: Session = Depends(get_db)):
++ 30:     db_appointment = Appointment(name=appointment.name, time=appointment.time)
+  31:     db.add(db_appointment)
+  32:     db.commit()
+  33:     db.refresh(db_appointment)
+  34:     return db_appointment
+--------------------------------------------------------------------------------
+[0.27357 s] survived
+   - [#   6] DDL Services.main: 
+--------------------------------------------------------------------------------
+  34:     return db_appointment
+  35: 
+  36: 
+  37: 
+- 38: @app.get('/appointments/{id}')
+- 39: def get_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(
++ 38: def get_appointment(id: int, db: Session = Depends(get_db)):
++ 39:     appointment = db.query(Models.appointments_models.Appointment).filter(
+  40:         Models.appointments_models.Appointment.id == id).first()
+  41:     
+  42:     if id > 6:
+  43:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+--------------------------------------------------------------------------------
+[0.30019 s] survived
+   - [#   7] DDL Services.main: 
+--------------------------------------------------------------------------------
+  49: 
+  50: 
+  51: 
+  52: 
+- 53: @app.delete('/appointments/{id}')
+- 54: def delete_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(Models.appointments_models.Appointment.id == id).first()
++ 53: def delete_appointment(id: int, db: Session = Depends(get_db)):
++ 54:     appointment = db.query(Models.appointments_models.Appointment).filter(Models.appointments_models.Appointment.id == id).first()
+  55:     if id > 6:
+  56:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+  57:     
+  58:     if appointment is None:
+--------------------------------------------------------------------------------
+[0.27521 s] survived
+   - [#   8] ROR Services.main: 
+--------------------------------------------------------------------------------
+  36: 
+  37: 
+  38: @app.get('/appointments/{id}')
+  39: def get_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(
+- 40:         Models.appointments_models.Appointment.id == id).first()
++ 40:         Models.appointments_models.Appointment.id != id).first()
+  41:     
+  42:     if id > 6:
+  43:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+  44:     
+--------------------------------------------------------------------------------
+[0.26540 s] survived
+   - [#   9] ROR Services.main: 
+--------------------------------------------------------------------------------
+  38: @app.get('/appointments/{id}')
+  39: def get_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(
+  40:         Models.appointments_models.Appointment.id == id).first()
+  41:     
+- 42:     if id > 6:
++ 42:     if id < 6:
+  43:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+  44:     
+  45:     if appointment is None:
+  46:         raise HTTPException(status_code=404, detail='Appointment not found')
+--------------------------------------------------------------------------------
+[0.27800 s] survived
+   - [#  10] ROR Services.main: 
+--------------------------------------------------------------------------------
+  38: @app.get('/appointments/{id}')
+  39: def get_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(
+  40:         Models.appointments_models.Appointment.id == id).first()
+  41:     
+- 42:     if id > 6:
++ 42:     if id >= 6:
+  43:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+  44:     
+  45:     if appointment is None:
+  46:         raise HTTPException(status_code=404, detail='Appointment not found')
+--------------------------------------------------------------------------------
+[0.28576 s] survived
+   - [#  11] ROR Services.main: 
+--------------------------------------------------------------------------------
+  50: 
+  51: 
+  52: 
+  53: @app.delete('/appointments/{id}')
+- 54: def delete_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(Models.appointments_models.Appointment.id == id).first()
++ 54: def delete_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(Models.appointments_models.Appointment.id != id).first()
+  55:     if id > 6:
+  56:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+  57:     
+  58:     if appointment is None:
+--------------------------------------------------------------------------------
+[0.28303 s] survived
+   - [#  12] ROR Services.main: 
+--------------------------------------------------------------------------------
+  51: 
+  52: 
+  53: @app.delete('/appointments/{id}')
+  54: def delete_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(Models.appointments_models.Appointment.id == id).first()
+- 55:     if id > 6:
++ 55:     if id < 6:
+  56:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+  57:     
+  58:     if appointment is None:
+  59:         raise HTTPException(status_code=404, detail='Appointment not found')
+--------------------------------------------------------------------------------
+[0.26228 s] survived
+   - [#  13] ROR Services.main: 
+--------------------------------------------------------------------------------
+  51: 
+  52: 
+  53: @app.delete('/appointments/{id}')
+  54: def delete_appointment(id: int, db: Session = Depends(get_db)):appointment = db.query(Models.appointments_models.Appointment).filter(Models.appointments_models.Appointment.id == id).first()
+- 55:     if id > 6:
++ 55:     if id >= 6:
+  56:         raise HTTPException(status_code=400, detail='Appointment ID must be less than or equal to 6')
+  57:     
+  58:     if appointment is None:
+  59:         raise HTTPException(status_code=404, detail='Appointment not found')
+--------------------------------------------------------------------------------
+[0.24151 s] survived
+[*] Mutation score [4.67908 s]: 0.0%
+   - all: 13
    - killed: 0 (0.0%)
-   - survived: 7 (100.0%)
+   - survived: 13 (100.0%)
    - incompetent: 0 (0.0%)
    - timeout: 0 (0.0%)
 </pre>
