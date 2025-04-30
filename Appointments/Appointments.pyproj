@@ -25,6 +25,9 @@
   <ItemGroup>
     <Compile Include="generate_mutation_html.py" />
     <Compile Include="Helpers\database.py" />
+    <Compile Include="Models\AppointmentCreate.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Models\appointments_models.py" />
     <Compile Include="Services\main.py" />
     <Compile Include="Services\__init__.py" />

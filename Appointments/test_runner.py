@@ -22,7 +22,8 @@ def run_mutation_tests():
             "mut.py",
             "--target", "Services.main",
             "--unit-test", "Test.appointments_test",
-            "--runner", "unittest"
+            "--runner", "unittest",
+            "--show-mutants"
         ],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
@@ -30,31 +31,34 @@ def run_mutation_tests():
     )
 
     output = result.stdout
-    with open("reports/mutation_raw_output.txt", "w") as f:
+    raw_output_path = "reports/mutation_raw_output.txt"
+    with open(raw_output_path, "w") as f:
         f.write(output)
-        print("[✔] mutation_raw_output.txt has been written.")
+        print(f"[✔] {raw_output_path} has been written.")
 
     # Extract summary from output
-    summary = {"total": 0, "killed": 0, "survived": 0, "incompetent": 0, "timeout": 0}
+    summary = {
+        "total": 0, "killed": 0, "survived": 0, "incompetent": 0, "timeout": 0, "score": 0.0
+    }
+
     for line in output.splitlines():
-        if "Mutation score" in line:
-            parts = line.strip().split(":")[-1].strip().split("%")[0]
-            summary["score"] = round(float(parts), 2)
-        elif "- all:" in line:
-            summary["total"] = int(line.strip().split(":")[1].strip())
-        elif "- killed:" in line:
-            summary["killed"] = int(line.strip().split(":")[1].strip().split()[0])
-        elif "- survived:" in line:
-            summary["survived"] = int(line.strip().split(":")[1].strip().split()[0])
-        elif "- incompetent:" in line:
-            summary["incompetent"] = int(line.strip().split(":")[1].strip().split()[0])
-        elif "- timeout:" in line:
-            summary["timeout"] = int(line.strip().split(":")[1].strip().split()[0])
-
-
-    # Fallback score if not found
-    if "score" not in summary:
-        summary["score"] = 0.0
+        line = line.strip()
+        try:
+            if "Mutation score" in line and "%" in line:
+                score_str = line.split(":")[-1].strip().split("%")[0]
+                summary["score"] = round(float(score_str), 2)
+            elif line.startswith("- all:"):
+                summary["total"] = int(line.split(":")[1].strip())
+            elif line.startswith("- killed:"):
+                summary["killed"] = int(line.split(":")[1].strip().split()[0])
+            elif line.startswith("- survived:"):
+                summary["survived"] = int(line.split(":")[1].strip().split()[0])
+            elif line.startswith("- incompetent:"):
+                summary["incompetent"] = int(line.split(":")[1].strip().split()[0])
+            elif line.startswith("- timeout:"):
+                summary["timeout"] = int(line.split(":")[1].strip().split()[0])
+        except (IndexError, ValueError):
+            continue  # Ignore broken lines gracefully
 
     # Render HTML
     template = """
@@ -81,6 +85,7 @@ def run_mutation_tests():
         f.write(html)
 
     print("[✔] Mutation HTML report created at reports/mutation_report.html")
+
 
 
 def run_normal_tests():

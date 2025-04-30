@@ -3,6 +3,8 @@ from fastapi import FastAPI, Depends, HTTPException
 import Models.appointments_models
 from Helpers.database import SessionLocal, engine
 from pydantic import BaseModel
+from Models.appointments_models import Appointment
+from Models.AppointmentCreate import AppointmentCreate
 
 Models.appointments_models.Base.metadata.create_all(bind=engine)
 
@@ -10,9 +12,9 @@ Models.appointments_models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 # Pydantic schema for creating an appointment
-class AppointmentCreate(BaseModel):
-    name: str
-    time: str
+# class AppointmentCreate(BaseModel):
+#     name: str
+#     time: str
 
 # Dependency: Get DB session
 def get_db():
@@ -25,7 +27,7 @@ def get_db():
 # POST /appointments - Create a new appointment
 @app.post("/appointments")
 def create_appointment(appointment: AppointmentCreate, db: Session = Depends(get_db)):
-    db_appointment = Models.appointments_models.Appointment(name=appointment.name, time=appointment.time)
+    db_appointment = Appointment(name=appointment.name, time=appointment.time)
     db.add(db_appointment)
     db.commit()
     db.refresh(db_appointment)
@@ -34,15 +36,25 @@ def create_appointment(appointment: AppointmentCreate, db: Session = Depends(get
 # GET /appointments/{id} - Retrieve an appointment
 @app.get("/appointments/{id}")
 def get_appointment(id: int, db: Session = Depends(get_db)):
-    appointment = db.query(Models.appointments_models.Appointment).filter(Models.appointments_models.Appointment.id == id).first()
+    appointment = db.query(Models.appointments_models.Appointment).filter(
+        Models.appointments_models.Appointment.id == id
+    ).first()
+    if id > 6:
+        raise HTTPException(status_code=400, detail="Appointment ID must be less than or equal to 6")
+
     if appointment is None:
         raise HTTPException(status_code=404, detail="Appointment not found")
+    
     return appointment
+
 
 # DELETE /appointments/{id} - Cancel an appointment
 @app.delete("/appointments/{id}")
 def delete_appointment(id: int, db: Session = Depends(get_db)):
     appointment = db.query(Models.appointments_models.Appointment).filter(Models.appointments_models.Appointment.id == id).first()
+    if id > 6:
+        raise HTTPException(status_code=400, detail="Appointment ID must be less than or equal to 6")
+
     if appointment is None:
         raise HTTPException(status_code=404, detail="Appointment not found")
     db.delete(appointment)
