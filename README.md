@@ -8,6 +8,20 @@ This project implements an Appointment Booking API using FastAPI, and supports b
 
 ✅ Dockerized execution for reproducibility
 
+🛠 Technologies Used
+
+   - FastAPI – lightweight web framework for building APIs
+
+   - Pytest – unit testing framework
+
+   - MutPy – mutation testing tool for Python
+
+   - Jinja2 – for HTML templating in mutation reports
+
+   - junit2html – converts XML test results to HTML
+
+   - Docker – containerizes test execution for reproducibility
+
 📦 Project Structure
 
 ![image](https://github.com/user-attachments/assets/46bcde23-6783-4fe6-999b-676c2f0bc18a)
