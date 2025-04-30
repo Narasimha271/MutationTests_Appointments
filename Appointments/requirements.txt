@@ -3,3 +3,8 @@ mutpy
 httpx
 pytest
 sqlalchemy
+html-testRunner==1.2.1
+junit2html
+jinja2
+
+

@@ -11,4 +11,6 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Run your mutation test script
-CMD ["python", "run_mutpy.py"]
+CMD ["sh", "-c", "python start.py | tee test_report.txt"]
+
+
